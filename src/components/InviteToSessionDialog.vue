@@ -1,18 +1,21 @@
 <template>
-  <div class="text-center">
+  <div>
     <v-btn prepend-icon="mdi-account-plus" color="primary">
       Invite Others
 
-      <v-dialog v-model="dialog" activator="parent">
+      <v-dialog v-model="dialog" activator="parent" max-width="500px">
         <v-card>
+          <v-card-title>Invite to Session</v-card-title>
           <v-card-text>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            <v-text-field
+              v-model="myId"
+              label="Session Code"
+              append-inner-icon="mdi-content-copy"
+              @click:append-inner="copy()"
+            ></v-text-field>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" block @click="dialog = false"
-              >Close Dialog</v-btn
-            >
+            <v-btn @click="dialog = false">Close</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -22,6 +25,10 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { myId } from "@/composables/peer";
+import { useClipboard } from "@vueuse/core";
+
+const { text, copy, copied, isSupported } = useClipboard({ source: myId });
 
 const dialog = ref(false);
 </script>

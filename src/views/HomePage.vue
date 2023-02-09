@@ -17,27 +17,7 @@
 <script setup lang="ts">
 import JoinSessionDialog from "@/components/JoinSessionDialog.vue";
 import InviteToSessionDialog from "@/components/InviteToSessionDialog.vue";
-import { Peer } from "peerjs";
-import { ref } from "vue";
-const peer = new Peer();
-const myId = ref("");
-const isReady = ref(false);
-const isConnected = ref(false);
+import { myId, isReady, isConnected, joinSession } from "@/composables/peer";
 
-peer.on("open", (id) => {
-  console.log("id:", id);
-  myId.value = id;
-  isReady.value = true;
-});
-
-function joinSession(id: string) {
-  const conn = peer.connect(id);
-  conn.on("open", () => {
-    conn.send("hi!");
-  });
-  conn.on("error", (err) => {
-    console.log("error:", err);
-  });
-}
 // joinSession("another-peers-id");
 </script>

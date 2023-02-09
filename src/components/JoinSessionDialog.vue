@@ -1,17 +1,29 @@
 <template>
-  <div class="text-center">
+  <div>
     <v-btn prepend-icon="mdi-login-variant" color="primary">
       Join Session
 
-      <v-dialog v-model="dialog" activator="parent">
+      <v-dialog v-model="dialog" activator="parent" max-width="500px">
         <v-card>
+          <v-card-title>Join Session</v-card-title>
           <v-card-text>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            <v-text-field
+              clearable
+              v-model="sessionId"
+              label="Paste Session Code"
+            ></v-text-field>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" block @click="dialog = false"
-              >Close Dialog</v-btn
+            <v-btn @click="dialog = false">Cancel</v-btn>
+            <v-btn
+              :loading="tryingToJoin && !isConnected"
+              :disabled="sessionId == ''"
+              color="primary"
+              @click="
+                tryingToJoin = true;
+                joinSession(sessionId);
+              "
+              >Join</v-btn
             >
           </v-card-actions>
         </v-card>
@@ -22,6 +34,9 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { isConnected, joinSession } from "@/composables/peer";
+const sessionId = ref("");
+const tryingToJoin = ref(false);
 
 const dialog = ref(false);
 </script>
