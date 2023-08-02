@@ -7,17 +7,29 @@
     <v-icon v-if="isConnected" icon="mdi-signal" class="ms-2"></v-icon>
   </v-system-bar>
   <!-- <v-toolbar border title="Application"></v-toolbar> -->
-  <v-app-bar :elevation="2"></v-app-bar>
-  <v-container>
-    <JoinSessionDialog @join="joinSession" />
-    <InviteToSessionDialog />
-  </v-container>
+  <!-- <v-app-bar :elevation="2">Internet MIDI Jam</v-app-bar> -->
+  <WelcomeDialog v-if="!isConnected" />
+  <ConnectionDiagram v-if="isConnected" />
 </template>
 
 <script setup lang="ts">
-import JoinSessionDialog from "@/components/JoinSessionDialog.vue";
-import InviteToSessionDialog from "@/components/InviteToSessionDialog.vue";
-import { myId, isReady, isConnected, joinSession } from "@/composables/peer";
+import ConnectionDiagram from "@/components/ConnectionDiagram.vue";
+import WelcomeDialog from "@/components/WelcomeDialog.vue";
+import {
+  myId,
+  isReady,
+  isConnected,
+  setupPeering,
+  cleanupConnections,
+} from "@/composables/peer";
+import { onMounted } from "vue";
+import { onUnmounted } from "vue";
 
 // joinSession("another-peers-id");
+onMounted(() => {
+  setupPeering();
+});
+onUnmounted(() => {
+  cleanupConnections();
+});
 </script>

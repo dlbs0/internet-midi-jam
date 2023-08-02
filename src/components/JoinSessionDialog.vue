@@ -1,6 +1,10 @@
 <template>
   <div>
-    <v-btn prepend-icon="mdi-login-variant" color="primary">
+    <v-btn
+      prepend-icon="mdi-login-variant"
+      color="primary"
+      :disabled="props.disabled"
+    >
       Join Session
 
       <v-dialog v-model="dialog" activator="parent" max-width="500px">
@@ -35,6 +39,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { isConnected, joinSession } from "@/composables/peer";
+const props = defineProps({ disabled: Boolean });
+
 const sessionId = ref("");
 const tryingToJoin = ref(false);
 
