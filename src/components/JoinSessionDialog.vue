@@ -14,7 +14,7 @@
             <v-text-field
               clearable
               v-model="sessionId"
-              label="Paste Session Code"
+              label="Enter Session Code"
             ></v-text-field>
           </v-card-text>
           <v-card-actions>
@@ -39,9 +39,11 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { isConnected, joinSession } from "@/composables/peer";
+import router from "@/router";
 const props = defineProps({ disabled: Boolean });
 
-const sessionId = ref("");
+const remoteId = router.currentRoute.value.query.remoteId as string;
+const sessionId = ref(remoteId);
 const tryingToJoin = ref(false);
 
 const dialog = ref(false);
