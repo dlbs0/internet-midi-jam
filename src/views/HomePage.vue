@@ -4,7 +4,7 @@
     <v-spacer></v-spacer>
     <span v-if="!isReady">Connecting...</span>
     <v-spacer></v-spacer>
-    <v-icon v-if="isConnected" icon="mdi-signal" class="ms-2"></v-icon>
+    <ConnectionStatusIndicator />
   </v-system-bar>
   <!-- <v-toolbar border title="Application"></v-toolbar> -->
   <!-- <v-app-bar :elevation="2">Internet MIDI Jam</v-app-bar> -->
@@ -15,6 +15,7 @@
 <script setup lang="ts">
 import ConnectionDiagram from "@/components/ConnectionDiagram.vue";
 import WelcomeDialog from "@/components/WelcomeDialog.vue";
+import ConnectionStatusIndicator from "@/components/ConnectionStatusIndicator.vue";
 import {
   myId,
   isReady,
@@ -30,6 +31,7 @@ onMounted(() => {
   setupPeering();
 });
 onUnmounted(() => {
+  console.log("unmounting");
   cleanupConnections();
 });
 </script>

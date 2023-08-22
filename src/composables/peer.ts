@@ -1,8 +1,7 @@
 import router from "@/router";
-import { useStorage, useUrlSearchParams } from "@vueuse/core";
-import { useRouteParams, useRouteQuery } from "@vueuse/router";
+import { useStorage } from "@vueuse/core";
 import { DataConnection, Peer } from "peerjs";
-import { Ref, ref } from "vue";
+import { ref } from "vue";
 
 let peer: Peer;
 const myId = ref("");
@@ -12,22 +11,27 @@ const remoteNickname = ref("");
 let remoteConnection: DataConnection | undefined;
 const isReady = ref(false);
 const isConnected = ref(false);
+const pingTimeToPeer = ref(0); //in ms
 
 let heartbeatInterval: NodeJS.Timeout;
 
 function initialisePeer() {
   if (!remoteConnection) return;
-  remoteConnection?.on("data", (data) => {
+  remoteConnection?.on("data", (data: any) => {
+    // remoteConnection?.metadata.
     console.log("got data", data);
     if (typeof data === "string") {
       // do things with string data here
     } else if (typeof data === "object" && data !== null && "type" in data) {
       switch (data.type) {
         case "nickname":
-          // eslint-disable-next-line no-case-declarations
-          const packet = data as { type: "nickname"; nickname: string };
-          if (packet.nickname) remoteNickname.value = packet?.nickname;
+          if (data.nickname) remoteNickname.value = data.nickname;
           break;
+        case "ping":
+          remoteConnection?.send({ type: "pong", time: data?.time });
+          break;
+        case "pong":
+          pingTimeToPeer.value = Date.now() - data?.time;
       }
     }
   });
@@ -46,16 +50,20 @@ function initialisePeer() {
 }
 
 export function setupPeering() {
-  peer = new Peer();
+  const debugMode = router.currentRoute.value.query.debugMode;
+  const myIdParam = router.currentRoute.value.query.myId;
+  if (debugMode && myIdParam) {
+    //for debugging, it's helpful to be able to control our id, rather than getting one randonmly
+    peer = new Peer(myIdParam.toString());
+  } else {
+    peer = new Peer();
+  }
   peer.on("open", (id) => {
     console.log("My peer id:", id);
     myId.value = id;
     isReady.value = true;
 
-    const debugMode = router.currentRoute.value.query.debugMode;
-    console.log("debugMode:", debugMode);
     const debugRemoteId = router.currentRoute.value.query.debugRemoteId;
-    console.log("debugRemoteId:", debugRemoteId);
     //for debugging, it's helpful to have two instances connect to each other
     if (debugMode === "true" && debugRemoteId) {
       setTimeout(() => {
@@ -78,18 +86,6 @@ function joinSession(id: string) {
   const conn = peer.connect(id);
   remoteConnection = conn;
   initialisePeer();
-  // conn.on("open", () => {
-  //   isConnected.value = true;
-  //   remoteId.value = conn.peer;
-  //   connectionId.value = conn.connectionId;
-  //   setupHeartbeats(conn);
-  // });
-  // conn.on("data", (data) => {
-  //   console.log("got data", data);
-  // });
-  // conn.on("error", (err) => {
-  //   console.log("error:", err);
-  // });
 }
 
 function sendNickname(
@@ -103,11 +99,12 @@ function setupHeartbeats(remoteDevice: DataConnection | undefined) {
   remoteDevice?.send("heartbeat");
   heartbeatInterval = setInterval(() => {
     remoteDevice?.send("heartbeat");
-  }, 1000);
+    remoteDevice?.send({ type: "ping", time: Date.now() });
+  }, 20000);
 }
 
 export function cleanupConnections() {
-  console.log("cleaning up connections");
+  console.log("cleaning up connections!");
   peer.destroy();
   clearInterval(heartbeatInterval);
 }
@@ -117,6 +114,7 @@ export {
   myId,
   isReady,
   isConnected,
+  pingTimeToPeer,
   myNickname,
   remoteNickname,
   joinSession,
