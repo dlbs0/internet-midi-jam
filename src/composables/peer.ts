@@ -100,7 +100,7 @@ function setupHeartbeats(remoteDevice: DataConnection | undefined) {
   heartbeatInterval = setInterval(() => {
     remoteDevice?.send("heartbeat");
     remoteDevice?.send({ type: "ping", time: Date.now() });
-  }, 20000);
+  }, 2000);
 }
 
 export function cleanupConnections() {
