@@ -1,5 +1,8 @@
 <template>
-  <div class="msNumber" v-if="isConnected">{{ pingTimeToPeer }}ms</div>
+  <v-icon v-if="isConnected" icon="mdi-arrow-up" class="ms-2" />
+  <div class="msNumber" v-if="isConnected">{{ pingTimeToPeer }}ms </div>
+  <v-icon v-if="isConnected" icon="mdi-arrow-down" class="ms-2" />
+  <div class="msNumber" v-if="isConnected">{{ pingTimeFromPeer }}ms </div>
   <v-icon
     v-if="signalLevel == 4"
     icon="mdi-signal-cellular-3"
@@ -26,7 +29,11 @@
   </v-icon>
 </template>
 <script setup lang="ts">
-import { isConnected, pingTimeToPeer } from "@/composables/peer";
+import {
+  isConnected,
+  pingTimeToPeer,
+  pingTimeFromPeer,
+} from "@/composables/peer";
 import { computed } from "vue";
 
 const signalLevel = computed(() => {

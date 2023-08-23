@@ -12,6 +12,7 @@ let remoteConnection: DataConnection | undefined;
 const isReady = ref(false);
 const isConnected = ref(false);
 const pingTimeToPeer = ref(0); //in ms
+const pingTimeFromPeer = ref(0); //in ms
 
 let heartbeatInterval: NodeJS.Timeout;
 
@@ -28,10 +29,16 @@ function initialisePeer() {
           if (data.nickname) remoteNickname.value = data.nickname;
           break;
         case "ping":
-          remoteConnection?.send({ type: "pong", time: data?.time });
+          remoteConnection?.send({
+            type: "pong",
+            startTime: data?.time,
+            halfwayTime: Date.now(),
+          });
           break;
         case "pong":
-          pingTimeToPeer.value = Date.now() - data?.time;
+          pingTimeToPeer.value = data?.halfwayTime - data?.startTime;
+          pingTimeFromPeer.value = Date.now() - data?.halfwayTime;
+          break;
       }
     }
   });
@@ -115,6 +122,7 @@ export {
   isReady,
   isConnected,
   pingTimeToPeer,
+  pingTimeFromPeer,
   myNickname,
   remoteNickname,
   joinSession,
