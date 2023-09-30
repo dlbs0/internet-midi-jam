@@ -2,7 +2,7 @@
   <v-icon v-if="isConnected" icon="mdi-arrow-up" class="ms-2" />
   <div class="msNumber" v-if="isConnected">{{ pingTimeToPeer }}ms </div>
   <v-icon v-if="isConnected" icon="mdi-arrow-down" class="ms-2" />
-  <div class="msNumber" v-if="isConnected">{{ pingTimeFromPeer }}ms </div>
+  <div class="msNumber" v-if="isConnected">{{ pingTimeFromPeer }}mss </div>
   <v-icon
     v-if="signalLevel == 4"
     icon="mdi-signal-cellular-3"

@@ -37,7 +37,7 @@ function initialisePeer() {
           break;
         case "pong":
           pingTimeToPeer.value = data?.halfwayTime - data?.startTime;
-          pingTimeFromPeer.value = Date.now() - data?.halfwayTime;
+          pingTimeFromPeer.value = (Date.now() - data?.startTime) / 2;
           break;
       }
     }
