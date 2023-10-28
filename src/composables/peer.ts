@@ -129,7 +129,6 @@ export {
   myId,
   isReady,
   isConnected,
-  pingTimeToPeer,
   pingTimeFromPeer,
   myNickname,
   remoteNickname,
