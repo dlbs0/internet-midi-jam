@@ -9,22 +9,12 @@
   <!-- <v-toolbar border title="Application"></v-toolbar> -->
   <!-- <v-app-bar :elevation="2">Internet MIDI Jam</v-app-bar> -->
   <WelcomeDialog v-if="!isConnected" />
-  <v-select
-    :items="midiInputs"
-    v-model="selectedMidiInput"
-    label="Select MIDI Input"
-  ></v-select>
-  <v-select
-    :items="midiOutputs"
-    v-model="selectedMidiOutput"
-    label="Select MIDI Output"
-  ></v-select>
-  <v-select
-    :items="gmTones"
-    v-model="selectedMidiProgram"
-    label="Select instrument"
-  ></v-select>
-  <ConnectionDiagram v-if="isConnected" />
+  <div v-if="isConnected">
+    <v-container fluid>
+      <MidiControl />
+      <ConnectionDiagram />
+    </v-container>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -49,6 +39,7 @@ import {
 import { onMounted } from "vue";
 import { onUnmounted } from "vue";
 import { gmTones } from "@/composables/classes";
+import MidiControl from "@/components/MidiControl.vue";
 
 onMounted(() => {
   startMidi();
