@@ -8,6 +8,19 @@
           v-model="myNickname"
         ></v-text-field>
       </div>
+
+      <div class="welcomeChild" v-if="hasGivenName">
+        <v-select
+          :items="midiInputs"
+          v-model="selectedMidiInput"
+          label="Select MIDI Input"
+        ></v-select>
+        <v-select
+          :items="midiOutputs"
+          v-model="selectedMidiOutput"
+          label="Select MIDI Output"
+        ></v-select>
+      </div>
       <div class="welcomeChild" v-if="hasGivenName">
         <JoinSessionDialog @join="joinSession" :disabled="!hasGivenName" />
         <InviteToSessionDialog :disabled="!hasGivenName" />
@@ -48,6 +61,13 @@
 import JoinSessionDialog from "@/components/JoinSessionDialog.vue";
 import InviteToSessionDialog from "@/components/InviteToSessionDialog.vue";
 import { joinSession, myNickname } from "@/composables/peer";
+import {
+  selectedMidiInput,
+  selectedMidiOutput,
+  midiInputs,
+  midiOutputs,
+} from "@/composables/midi";
+
 import { computed } from "vue";
 
 const hasGivenName = computed(

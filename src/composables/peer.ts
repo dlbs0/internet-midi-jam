@@ -2,6 +2,7 @@ import router from "@/router";
 import { useStorage } from "@vueuse/core";
 import { DataConnection, Peer } from "peerjs";
 import { ref } from "vue";
+import { PeerMidiEvent, sendToMidiOutput } from "./midi";
 
 let peer: Peer;
 const myId = ref("");
@@ -19,7 +20,6 @@ let heartbeatInterval: NodeJS.Timeout;
 function initialisePeer() {
   if (!remoteConnection) return;
   remoteConnection?.on("data", (data: any) => {
-    // remoteConnection?.metadata.
     console.log("got data", data);
     if (typeof data === "string") {
       // do things with string data here
@@ -39,6 +39,10 @@ function initialisePeer() {
           pingTimeToPeer.value = data?.halfwayTime - data?.startTime;
           pingTimeFromPeer.value = (Date.now() - data?.startTime) / 2;
           break;
+        case "midi":
+          console.log("got midi", data);
+          sendToMidiOutput(data.data);
+          break;
       }
     }
   });
@@ -56,9 +60,15 @@ function initialisePeer() {
   });
 }
 
-export function setupPeering() {
+function sendToPeer(type: string, data: PeerMidiEvent) {
+  if (!remoteConnection) return;
+  remoteConnection.send({ type, data });
+}
+
+function setupPeering() {
   const debugMode = router.currentRoute.value.query.debugMode;
   const myIdParam = router.currentRoute.value.query.myId;
+  console.log("myIdParam:", myIdParam);
   if (debugMode && myIdParam) {
     //for debugging, it's helpful to be able to control our id, rather than getting one randonmly
     peer = new Peer(myIdParam.toString());
@@ -126,4 +136,6 @@ export {
   myNickname,
   remoteNickname,
   joinSession,
+  sendToPeer,
+  setupPeering,
 };
