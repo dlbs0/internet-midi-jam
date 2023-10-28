@@ -19,6 +19,11 @@
     v-model="selectedMidiOutput"
     label="Select MIDI Output"
   ></v-select>
+  <v-select
+    :items="gmTones"
+    v-model="selectedMidiProgram"
+    label="Select instrument"
+  ></v-select>
   <ConnectionDiagram v-if="isConnected" />
 </template>
 
@@ -39,9 +44,11 @@ import {
   selectedMidiInput,
   selectedMidiOutput,
   startMidi,
+  selectedMidiProgram,
 } from "@/composables/midi";
 import { onMounted } from "vue";
 import { onUnmounted } from "vue";
+import { gmTones } from "@/composables/classes";
 
 onMounted(() => {
   startMidi();

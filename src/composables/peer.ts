@@ -2,7 +2,7 @@ import router from "@/router";
 import { useStorage } from "@vueuse/core";
 import { DataConnection, Peer } from "peerjs";
 import { ref } from "vue";
-import { PeerMidiEvent, sendToMidiOutput } from "./midi";
+import { PeerMidiEvent, sendToMidiOutput, setMidiProgram } from "./midi";
 
 let peer: Peer;
 const myId = ref("");
@@ -37,9 +37,13 @@ function initialisePeer() {
         case "pong":
           pingTimeFromPeer.value = (Date.now() - data?.startTime) / 2;
           break;
-        case "midi":
-          console.log("got midi", data);
-          sendToMidiOutput(data.data);
+        case "noteon":
+        case "noteoff":
+        case "controlchange":
+          sendToMidiOutput(data);
+          break;
+        case "programchange":
+          setMidiProgram(data);
           break;
       }
     }
@@ -56,11 +60,16 @@ function initialisePeer() {
   remoteConnection?.on("error", (err) => {
     console.log("error:", err);
   });
+  remoteConnection.on("close", () => {
+    console.log("lost peer", remoteConnection?.connectionId);
+    isConnected.value = false;
+    clearInterval(heartbeatInterval);
+  });
 }
 
-function sendToPeer(type: string, data: PeerMidiEvent) {
+function sendToPeer(data: PeerMidiEvent) {
   if (!remoteConnection) return;
-  remoteConnection.send({ type, data });
+  remoteConnection.send(data);
 }
 
 function setupPeering() {
