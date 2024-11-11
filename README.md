@@ -1,6 +1,10 @@
 # internet-midi-jam
 
-A web app to allow midi devices to jam together over WebRTC
+A web app to allow midi devices to jam together over WebRTC.
+
+Uses Vue, vuetify, and the peerjs libraries to make it all work. Deployed with cloudflare pages.
+
+Live at internet-midi-jam.pages.dev
 
 ## Project setup
 
