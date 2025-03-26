@@ -16,7 +16,8 @@
         >Get in touch, and create an issue
         <a href="https://github.com/dlbs0/internet-midi-jam/issues">here</a> to
         let me know what's going on. Please note this site is still in beta, and
-        your feedback helps make it better.</p
+        your feedback helps make it better. Some browsers don't support Web
+        MIDI, try using Chrome.</p
       ><br />
       <br />
       <div class="welcomeChild">
