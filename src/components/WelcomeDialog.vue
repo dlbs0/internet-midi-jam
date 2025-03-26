@@ -1,6 +1,24 @@
 <template>
   <div class="pageWrapper">
     <div class="welcomeParent" v-auto-animate>
+      <h1>Welcome to Internet MIDI Jam</h1>
+      <p
+        >IMJ lets you jam with a friend over the internet, using your MIDI
+        instruments. <br />Simply connect your MIDI keyboard to your computer,
+        send your friend an invite, and start jamming!
+        <br />
+        This site endeavours to provide the lowest possible latency, by only
+        sending MIDI packets instead of audio, and sending them directly (in
+        most cases) to your friend's computer, rather than through a server. </p
+      ><br />
+      <h3>Having problems?</h3>
+      <p
+        >Get in touch, and create an issue
+        <a href="https://github.com/dlbs0/internet-midi-jam/issues">here</a> to
+        let me know what's going on. Please note this site is still in beta, and
+        your feedback helps make it better.</p
+      ><br />
+      <br />
       <div class="welcomeChild">
         <v-text-field
           label="What's your name?"
